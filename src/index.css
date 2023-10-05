@@ -1,0 +1,10 @@
+.zoom-background {
+    position: relative;
+    overflow: hidden;
+    transform: scale(1); /* Initial scale */
+    transition: transform 0.5s ease; /* Add smooth transition */
+  }
+  
+  .zoom-background:hover {
+    transform: scale(1.1); /* Zoom effect on hover */
+  }

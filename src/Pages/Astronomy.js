@@ -15,16 +15,16 @@ const Astronomy = () => {
   const initialDate = "2015-01-01";
   const [formattedDate, setFormattedDate] = useState(initialDate);
 
-  //states handling other components
+  // states handling other components
   const [open, setOpen] = useState(false);
   const [alertMsg, setAlertMsg] = useState(null);
   const [isErr, setIsErr] = useState(false);
 
-  //States for handling changing images
+  // States for handling changing images
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   // State for image URLs
-  const [images, setImages] = useState("");
-  const [imgDetatils, setImgDetails] = useState([]);
+  const [images, setImages] = useState([]);
+  const [imgDetails, setImgDetails] = useState({});
 
   useEffect(() => {
     // Fetch initial set of image URLs
@@ -35,7 +35,7 @@ const Astronomy = () => {
       .then((response) => {
         if (response.status === 200) {
           const apodData = response.data;
-
+          console.log(apodData);
           // Set other APOD details as needed
           setImgDetails(apodData);
 
@@ -55,7 +55,7 @@ const Astronomy = () => {
               setOpen(true);
               setIsErr(true);
               setAlertMsg(`Error loading image`);
-              // You can set a fallback image or display an error message to the user
+              setImages([]); // Set images as an empty array or provide a fallback image URL
             };
           }
         } else {
@@ -137,11 +137,11 @@ const Astronomy = () => {
     setFormattedDate(newFormattedDate);
   };
 
-  console.log(images);
   return (
     <>
       <Box>
         <Box>
+          {/* Display an alert message */}
           <Collapse in={open}>
             <Alert
               severity={isErr ? "error" : "success"}
@@ -152,8 +152,6 @@ const Astronomy = () => {
                   size="small"
                   onClick={() => {
                     setOpen(false);
-                    setAlertMsg(null);
-                    setIsErr(false);
                   }}
                 >
                   <CloseIcon fontSize="inherit" />
@@ -165,47 +163,52 @@ const Astronomy = () => {
             </Alert>
           </Collapse>
         </Box>
-        <Typography variant="h6"> Astronomy </Typography>
+        {/* <Typography variant="h6">Astronomy</Typography> */}
         <Paper
           elevation={24}
           style={{
             padding: "4rem",
             margin: "0 auto",
-            width: "50%",
-            height: "50vh",
-            backgroundImage: `url('${images}')`,
+            width: "45%",
+            height: "40vh",
+            backgroundImage: `url('${images[0]}')`,
             backgroundSize: "cover",
             backgroundRepeat: "no-repeat",
             backgroundPosition: "center center",
           }}
         >
-          {images ? (
+          <Paper
+            elevation={24}
+            className="zoom-background"
+            style={{
+              margin: "0 auto",
+              width: "100%",
+              height: "100%",
+              border: ".3rem solid gray",
+            }}
+          >
             <img
               src={images[0]}
               alt="APOD"
-              variant="outlined"
               style={{
                 width: "100%",
                 height: "100%",
-                objectFit: "contain",
-                border: "1px ",
+                objectFit: "cover",
+                margin: "0 auto",
+                border: "1px",
               }}
             />
-          ) : (
-            <img
-              src="../Assets/404.image.jpg"
-              alt="Default"
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "contain",
-              }}
-            />
-          )}
+          </Paper>
         </Paper>
         <Box>
-          {/* Display the image number */}
-          <div style={{ textAlign: "center" }}>
+          {/* Navigation buttons */}
+          <div
+            style={{
+              textAlign: "center",
+              paddingBottom: "1rem",
+              paddingTop: "2rem",
+            }}
+          >
             <Button variant="outlined" onClick={handlePrevious}>
               Previous
             </Button>
@@ -213,13 +216,34 @@ const Astronomy = () => {
               Next
             </Button>
           </div>
-          <Typography variant="h6" align="center">
-            {imgDetatils?.date}
+          {/* Display image details */}
+          <Typography variant="h5" align="center">
+            {imgDetails?.title}
           </Typography>
           <Typography variant="h6" align="center">
-            {imgDetatils?.copyright}
+            {imgDetails?.date}
           </Typography>
-          {/* Navigation buttons */}
+        </Box>
+        <Box
+          style={{
+            textAlign: "center",
+            margin: "0 10rem",
+            // paddingTop: "3rem",
+            // paddingBottom: "3rem",
+            // border: "solid .3rem black",
+            borderRadius: "30rem",
+          }}
+        >
+          <p
+            style={{
+              marginLeft: "8rem",
+              marginRight: "8rem",
+              textAlign: "justify",
+              fontSize: "1.4rem",
+            }}
+          >
+            {imgDetails?.explanation}
+          </p>
         </Box>
       </Box>
     </>
