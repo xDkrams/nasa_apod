@@ -8,6 +8,8 @@ import Alert from "@mui/material/Alert";
 import IconButton from "@mui/material/IconButton";
 import Collapse from "@mui/material/Collapse";
 import CloseIcon from "@mui/icons-material/Close";
+import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 
 const Astronomy = () => {
   // apiKey
@@ -25,6 +27,20 @@ const Astronomy = () => {
   // State for image URLs
   const [images, setImages] = useState([]);
   const [imgDetails, setImgDetails] = useState({});
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const numStars = 200;
+    const starryBackground = document.getElementById("starry-bg");
+
+    for (let i = 0; i < numStars; i++) {
+      const star = document.createElement("div");
+      star.className = "star";
+      star.style.left = `${Math.random() * 100}%`;
+      star.style.top = `${Math.random() * 100}%`;
+      starryBackground.appendChild(star);
+    }
+  }, []);
 
   useEffect(() => {
     // Fetch initial set of image URLs
@@ -35,7 +51,6 @@ const Astronomy = () => {
       .then((response) => {
         if (response.status === 200) {
           const apodData = response.data;
-          console.log(apodData);
           // Set other APOD details as needed
           setImgDetails(apodData);
 
@@ -94,6 +109,7 @@ const Astronomy = () => {
   }, [open]);
 
   const handleNext = () => {
+    setLoading(true);
     if (currentImageIndex < images.length - 1) {
       // If there are more images in the array, increment the index
       setCurrentImageIndex((prevIndex) => prevIndex + 1);
@@ -121,6 +137,7 @@ const Astronomy = () => {
   };
 
   const handlePrevious = () => {
+    setLoading(true);
     // Convert the current formattedDate to a Date object
     const currentDate = new Date(formattedDate);
 
@@ -137,10 +154,18 @@ const Astronomy = () => {
     setFormattedDate(newFormattedDate);
   };
 
+  useEffect(() => {
+    // Simulate a 1.5-second loading delay
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+    return () => clearTimeout(timer); // Clean up the timer on unmount
+  }, [loading]);
   return (
     <>
       <Box>
-        <Box>
+        <div className="starry-background" id="starry-bg"></div>
+        <Box style={{ height: "5vh" }}>
           {/* Display an alert message */}
           <Collapse in={open}>
             <Alert
@@ -163,87 +188,143 @@ const Astronomy = () => {
             </Alert>
           </Collapse>
         </Box>
+        {loading && (
+          <>
+            <Box className="loading-animation">
+              <Box className="loading-spinner"> </Box>
+            </Box>
+          </>
+        )}
         {/* <Typography variant="h6">Astronomy</Typography> */}
-        <Paper
-          elevation={24}
-          style={{
-            padding: "4rem",
-            margin: "0 auto",
-            width: "45%",
-            height: "40vh",
-            backgroundImage: `url('${images[0]}')`,
-            backgroundSize: "cover",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "center center",
-          }}
-        >
-          <Paper
-            elevation={24}
-            className="zoom-background"
-            style={{
-              margin: "0 auto",
-              width: "100%",
-              height: "100%",
-              border: ".3rem solid gray",
-            }}
-          >
-            <img
-              src={images[0]}
-              alt="APOD"
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                margin: "0 auto",
-                border: "1px",
-              }}
-            />
-          </Paper>
-        </Paper>
-        <Box>
-          {/* Navigation buttons */}
-          <div
-            style={{
-              textAlign: "center",
-              paddingBottom: "1rem",
-              paddingTop: "2rem",
-            }}
-          >
-            <Button variant="outlined" onClick={handlePrevious}>
-              Previous
-            </Button>
-            <Button variant="outlined" onClick={handleNext}>
-              Next
-            </Button>
-          </div>
-          {/* Display image details */}
-          <Typography variant="h5" align="center">
-            {imgDetails?.title}
-          </Typography>
-          <Typography variant="h6" align="center">
-            {imgDetails?.date}
-          </Typography>
-        </Box>
         <Box
           style={{
-            textAlign: "center",
-            margin: "0 10rem",
-            // paddingTop: "3rem",
-            // paddingBottom: "3rem",
-            // border: "solid .3rem black",
-            borderRadius: "30rem",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            width: "100%",
+            overflowX: "hidden",
           }}
         >
-          <p
+          <Box
             style={{
-              marginLeft: "8rem",
-              marginRight: "8rem",
-              textAlign: "justify",
-              fontSize: "1.4rem",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: "0 1rem",
+              width: "100%",
             }}
           >
-            {imgDetails?.explanation}
-          </p>
+            <IconButton
+              onClick={handlePrevious}
+              color="primary"
+              sx={{
+                "&:hover": {
+                  backgroundColor: "transparent",
+                },
+              }}
+            >
+              <KeyboardArrowLeftIcon
+                fontSize="large"
+                style={{ fontSize: "7rem", marginLeft: "8rem" }}
+              />
+            </IconButton>
+            <Paper
+              elevation={24}
+              style={{
+                padding: "4rem",
+                margin: "0 auto",
+                width: "45%",
+                height: "40vh",
+                backgroundImage: `url('${images[0]}')`,
+                backgroundSize: "cover",
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "center center",
+                flex: "1 1 auto",
+                boxShadow: "0 0 20px rgba(255, 255, 255, 0.5)",
+              }}
+            >
+              <Box
+                style={{
+                  margin: "0 auto",
+                  width: "41%",
+                  height: "95%",
+                  backgroundColor: "transparent",
+                  borderColor: "transparent",
+                }}
+              >
+                <img
+                  className="zoom-background"
+                  src={images[0]}
+                  alt="APOD"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "contain",
+                    border: "1px",
+                  }}
+                />
+              </Box>
+            </Paper>
+            <IconButton
+              onClick={handleNext}
+              color="primary"
+              sx={{
+                "&:hover": {
+                  backgroundColor: "transparent",
+                },
+              }}
+            >
+              <KeyboardArrowRightIcon
+                fontSize="large"
+                style={{ fontSize: "7rem", marginRight: "8rem" }}
+              />
+            </IconButton>
+          </Box>
+          <Box style={{ paddingTop: "2rem" }}>
+            {/* Display image details */}
+            <Typography variant="h4" align="center" className="text-elements">
+              {imgDetails?.title}
+            </Typography>
+            <Typography variant="h6" align="center" className="text-elements">
+              {imgDetails?.date}
+            </Typography>
+          </Box>
+          <Box
+            style={{
+              textAlign: "center",
+              margin: "2rem 10rem",
+              maxHeight: "16rem",
+              height: "16rem",
+              overflow: "auto",
+            }}
+          >
+            <Typography
+              className="text-elements"
+              style={{
+                marginLeft: "8rem",
+                marginRight: "8rem",
+                textAlign: "justify",
+                fontSize: "1.3rem",
+              }}
+            >
+              {imgDetails?.explanation}
+            </Typography>
+          </Box>
+        </Box>
+        <Box>
+          <Typography variant="body2" className="text-elements">
+            Image credits: NASA's Astronomy Picture of the Day (APOD) - Explore
+            more at{" "}
+            <a
+              className="text-elements"
+              href="https://apod.nasa.gov/apod/astropix.html"
+              target="_blank"
+              rel="noopener nreferrer"
+            >
+              {" "}
+              https://apod.nasa.gov/apod/astropix.html
+            </a>
+          </Typography>
         </Box>
       </Box>
     </>
