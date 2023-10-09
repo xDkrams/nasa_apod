@@ -2,32 +2,93 @@ import React, { useState, useEffect } from "react";
 import "../index.css";
 import axios from "axios";
 
-//mui components
-import { Box, Paper, Button, Typography } from "@mui/material";
+// MUI components
+import {
+  Box,
+  Paper,
+  Button,
+  Typography,
+  TextField,
+  IconButton,
+  Collapse,
+} from "@mui/material";
 import Alert from "@mui/material/Alert";
-import IconButton from "@mui/material/IconButton";
-import Collapse from "@mui/material/Collapse";
 import CloseIcon from "@mui/icons-material/Close";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
+import dayjs from "dayjs";
+import "dayjs/locale/en";
 
 const Astronomy = () => {
-  // apiKey
+  // API key
   const key = "YjVAcfbB9h2bx2hb3OcLG63oR6eaf6rjrWQf60ec";
   const initialDate = "2015-01-01";
-  const [formattedDate, setFormattedDate] = useState(initialDate);
 
-  // states handling other components
+  // States
+  const [formattedDate, setFormattedDate] = useState(initialDate);
   const [open, setOpen] = useState(false);
   const [alertMsg, setAlertMsg] = useState(null);
   const [isErr, setIsErr] = useState(false);
-
-  // States for handling changing images
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  // State for image URLs
   const [images, setImages] = useState([]);
   const [imgDetails, setImgDetails] = useState({});
   const [loading, setLoading] = useState(true);
+  const [selectedDate, setSelectedDate] = useState(dayjs(initialDate));
+
+  // Handle date change
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+
+    // Format the selected date as a string
+    const formattedSelectedDate = date.format("YYYY-MM-DD");
+    setFormattedDate(formattedSelectedDate);
+    // axios
+    //   .get(
+    //     `https://api.nasa.gov/planetary/apod?api_key=${key}&date=${formattedSelectedDate}`
+    //   )
+    //   .then((response) => {
+    //     if (response.status === 200) {
+    //       const apodData = response.data;
+    //       setImgDetails(apodData);
+
+    //       if (apodData.url) {
+    //         const img = new Image();
+    //         img.src = apodData.url;
+
+    //         img.onload = () => {
+    //           setImages([apodData.url]);
+    //         };
+
+    //         img.onerror = () => {
+    //           setOpen(true);
+    //           setIsErr(true);
+    //           setAlertMsg(`Error loading image`);
+    //           setImages([]); // Set images as an empty array or provide a fallback image URL
+    //         };
+    //       }
+    //       setSelectedDate(formattedSelectedDate);
+    //     } else {
+    //       throw new Error(`Request failed with status ${response.status}`);
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //     if (
+    //       error.response &&
+    //       error.response.data &&
+    //       error.response.data.message
+    //     ) {
+    //       setAlertMsg(error.response.data.message);
+    //     } else {
+    //       setAlertMsg("An error occurred while fetching data.");
+    //     }
+    //     setOpen(true);
+    //     setIsErr(true);
+    //     console.error("Error fetching data:", error);
+    //   });
+  };
 
   useEffect(() => {
     const numStars = 200;
@@ -43,7 +104,7 @@ const Astronomy = () => {
   }, []);
 
   useEffect(() => {
-    // Fetch initial set of image URLs
+    setLoading(true);
     axios
       .get(
         `https://api.nasa.gov/planetary/apod?api_key=${key}&date=${formattedDate}`
@@ -51,28 +112,26 @@ const Astronomy = () => {
       .then((response) => {
         if (response.status === 200) {
           const apodData = response.data;
-          // Set other APOD details as needed
           setImgDetails(apodData);
 
-          // Check if the URL exists
           if (apodData.url) {
-            // Attempt to load the image
             const img = new Image();
             img.src = apodData.url;
 
             img.onload = () => {
-              // Image loaded successfully
               setImages([apodData.url]);
             };
 
             img.onerror = () => {
-              // Handle errors when loading the image
               setOpen(true);
               setIsErr(true);
               setAlertMsg(`Error loading image`);
               setImages([]); // Set images as an empty array or provide a fallback image URL
             };
           }
+
+          const updateDatePickerValue = dayjs(formattedDate);
+          setSelectedDate(updateDatePickerValue);
         } else {
           throw new Error(`Request failed with status ${response.status}`);
         }
@@ -96,77 +155,57 @@ const Astronomy = () => {
 
   useEffect(() => {
     if (open) {
-      // If the 'open' state is true, set a timeout to close it after 5 seconds
       const timeoutId = setTimeout(() => {
         setOpen(false);
         setAlertMsg(null);
         setIsErr(false);
       }, 5000);
 
-      // Clean up the timeout when the component unmounts or when 'open' changes
       return () => clearTimeout(timeoutId);
     }
   }, [open]);
 
   const handleNext = () => {
-    setLoading(true);
     if (currentImageIndex < images.length - 1) {
-      // If there are more images in the array, increment the index
       setCurrentImageIndex((prevIndex) => prevIndex + 1);
     } else {
-      // If there are no more images in the array, fetch the next image
       fetchNextImage();
     }
   };
 
   const fetchNextImage = () => {
-    // Convert the current formattedDate to a Date object
     const currentDate = new Date(formattedDate);
-
-    // Increment the date by one day
     currentDate.setDate(currentDate.getDate() + 1);
-
-    // Convert the updated date back to the "yyyy-mm-dd" format
     const year = currentDate.getFullYear();
     const month = String(currentDate.getMonth() + 1).padStart(2, "0");
     const day = String(currentDate.getDate()).padStart(2, "0");
     const newFormattedDate = `${year}-${month}-${day}`;
-
-    // Update the formattedDate state with the new date
     setFormattedDate(newFormattedDate);
   };
 
   const handlePrevious = () => {
     setLoading(true);
-    // Convert the current formattedDate to a Date object
     const currentDate = new Date(formattedDate);
-
-    // Decrement the date by one day
     currentDate.setDate(currentDate.getDate() - 1);
-
-    // Convert the updated date back to the "yyyy-mm-dd" format
     const year = currentDate.getFullYear();
     const month = String(currentDate.getMonth() + 1).padStart(2, "0");
     const day = String(currentDate.getDate()).padStart(2, "0");
     const newFormattedDate = `${year}-${month}-${day}`;
-
-    // Update the formattedDate state with the new date
     setFormattedDate(newFormattedDate);
   };
 
   useEffect(() => {
-    // Simulate a 1.5-second loading delay
     const timer = setTimeout(() => {
       setLoading(false);
     }, 1000);
-    return () => clearTimeout(timer); // Clean up the timer on unmount
+    return () => clearTimeout(timer);
   }, [loading]);
+
   return (
     <>
       <Box>
         <div className="starry-background" id="starry-bg"></div>
         <Box style={{ height: "5vh" }}>
-          {/* Display an alert message */}
           <Collapse in={open}>
             <Alert
               severity={isErr ? "error" : "success"}
@@ -195,7 +234,6 @@ const Astronomy = () => {
             </Box>
           </>
         )}
-        {/* <Typography variant="h6">Astronomy</Typography> */}
         <Box
           style={{
             display: "flex",
@@ -280,27 +318,57 @@ const Astronomy = () => {
               />
             </IconButton>
           </Box>
-          <Box style={{ paddingTop: "2rem" }}>
-            {/* Display image details */}
-            <Typography variant="h4" align="center" className="text-elements">
+          <Box style={{ padding: "1rem 0" }}>
+            <Typography
+              variant="h4"
+              align="center"
+              className="text-elements"
+              style={{ fontFamily: "SpaceMono" }}
+            >
               {imgDetails?.title}
             </Typography>
-            <Typography variant="h6" align="center" className="text-elements">
-              {imgDetails?.date}
-            </Typography>
+            <Box
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                backgroundColor: "white",
+                margin: "0 15rem",
+                marginBottom: "0.1rem",
+                borderRadius: "2rem",
+              }}
+            >
+              {/* Centered DatePicker */}
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  value={selectedDate}
+                  onChange={handleDateChange}
+                  sx={{
+                    "& fieldset": {
+                      border: "none",
+                    },
+                    "& input": {
+                      color: "black",
+                      textAlign: "center", // Center-align the text
+                    },
+                  }}
+                />
+              </LocalizationProvider>
+            </Box>
           </Box>
           <Box
             style={{
               textAlign: "center",
-              margin: "2rem 10rem",
-              maxHeight: "16rem",
-              height: "16rem",
+              margin: "1rem 10rem",
+              maxHeight: "13rem",
+              height: "13rem",
               overflow: "auto",
             }}
           >
             <Typography
               className="text-elements"
               style={{
+                fontFamily: "SpaceMono",
                 marginLeft: "8rem",
                 marginRight: "8rem",
                 textAlign: "justify",
@@ -319,7 +387,7 @@ const Astronomy = () => {
               className="text-elements"
               href="https://apod.nasa.gov/apod/astropix.html"
               target="_blank"
-              rel="noopener nreferrer"
+              rel="noopener noreferrer"
             >
               {" "}
               https://apod.nasa.gov/apod/astropix.html

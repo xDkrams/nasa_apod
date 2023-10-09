@@ -1,8 +1,8 @@
+@font-face {
+  font-family: 'SpaceMono';
+  src: url('../src/Assets/fonts/SpaceMono-Regular.ttf') format('truetype');
+}
 
-
-/* Add the @import rule for Space Mono font */
-@import url('https://fonts.googleapis.com/css2?family=Space+Mono&display=swap');
-/* Rest of your CSS rules */
 .zoom-background {
     position: relative;
     overflow: hidden;
@@ -44,7 +44,7 @@
 
   body {
     margin: 0;
-    overflow: hidden;
+    /* overflow: hidden; */
   }
   
   .starry-background {
@@ -68,5 +68,9 @@
   /* Add the font-family to your text elements */
   .text-elements {
     color: white; /* Set the text color to white */
-    font-family: 'Space Mono', monospace;
+    /* font-family: 'Space Mono', monospace; */
+  }
+  .custom-datepicker:focus {
+    outline: none; /* Remove the default outline */
+    border: 2px solid #1e88e5; /* Custom border color on focus */
   }
