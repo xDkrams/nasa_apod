@@ -3,15 +3,7 @@ import "../index.css";
 import axios from "axios";
 
 // MUI components
-import {
-  Box,
-  Paper,
-  Button,
-  Typography,
-  TextField,
-  IconButton,
-  Collapse,
-} from "@mui/material";
+import { Box, Paper, Typography, IconButton, Collapse } from "@mui/material";
 import Alert from "@mui/material/Alert";
 import CloseIcon from "@mui/icons-material/Close";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
@@ -44,50 +36,6 @@ const Astronomy = () => {
     // Format the selected date as a string
     const formattedSelectedDate = date.format("YYYY-MM-DD");
     setFormattedDate(formattedSelectedDate);
-    // axios
-    //   .get(
-    //     `https://api.nasa.gov/planetary/apod?api_key=${key}&date=${formattedSelectedDate}`
-    //   )
-    //   .then((response) => {
-    //     if (response.status === 200) {
-    //       const apodData = response.data;
-    //       setImgDetails(apodData);
-
-    //       if (apodData.url) {
-    //         const img = new Image();
-    //         img.src = apodData.url;
-
-    //         img.onload = () => {
-    //           setImages([apodData.url]);
-    //         };
-
-    //         img.onerror = () => {
-    //           setOpen(true);
-    //           setIsErr(true);
-    //           setAlertMsg(`Error loading image`);
-    //           setImages([]); // Set images as an empty array or provide a fallback image URL
-    //         };
-    //       }
-    //       setSelectedDate(formattedSelectedDate);
-    //     } else {
-    //       throw new Error(`Request failed with status ${response.status}`);
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //     if (
-    //       error.response &&
-    //       error.response.data &&
-    //       error.response.data.message
-    //     ) {
-    //       setAlertMsg(error.response.data.message);
-    //     } else {
-    //       setAlertMsg("An error occurred while fetching data.");
-    //     }
-    //     setOpen(true);
-    //     setIsErr(true);
-    //     console.error("Error fetching data:", error);
-    //   });
   };
 
   useEffect(() => {
