@@ -3,7 +3,16 @@ import "../index.css";
 import axios from "axios";
 
 // MUI components
-import { Box, Paper, Typography, IconButton, Collapse } from "@mui/material";
+import {
+  Box,
+  Paper,
+  Typography,
+  IconButton,
+  Collapse,
+  Grid,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import Alert from "@mui/material/Alert";
 import CloseIcon from "@mui/icons-material/Close";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
@@ -191,13 +200,60 @@ const Astronomy = () => {
             overflowX: "hidden",
           }}
         >
+          <Grid container>
+            <Grid
+              item
+              xs={12}
+              md={12}
+              lg={12}
+              xl={12}
+              container
+              justifyContent="center"
+              alignItems="center"
+            >
+              <Paper
+                elevation={24}
+                style={{
+                  padding: "4rem",
+                  margin: "0 auto",
+                  width: "100%",
+                  height: "40vh",
+                  backgroundImage: `url('${images[0]}')`,
+                  backgroundSize: "cover",
+                  backgroundRepeat: "no-repeat",
+                  backgroundPosition: "center center",
+                  flex: "1 1 auto",
+                  boxShadow: "0 0 20px rgba(255, 255, 255, 0.5)",
+                }}
+              >
+                <Box
+                  style={{
+                    margin: "0 auto",
+                    width: "100%",
+                    height: "95%",
+                    backgroundColor: "transparent",
+                    borderColor: "transparent",
+                  }}
+                >
+                  <img
+                    className="zoom-background"
+                    src={images[0]}
+                    alt="APOD"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "contain",
+                      border: "1px",
+                    }}
+                  />
+                </Box>
+              </Paper>
+            </Grid>
+          </Grid>
           <Box
             style={{
               display: "flex",
-              justifyContent: "space-between",
               alignItems: "center",
-              padding: "0 1rem",
-              width: "100%",
             }}
           >
             <IconButton
@@ -207,50 +263,52 @@ const Astronomy = () => {
                 "&:hover": {
                   backgroundColor: "transparent",
                 },
+                "& .MuiSvgIcon-root": {
+                  fontSize: "7rem",
+                  margin: "0 4rem",
+                },
               }}
             >
-              <KeyboardArrowLeftIcon
-                fontSize="large"
-                style={{ fontSize: "7rem", marginLeft: "8rem" }}
-              />
+              <KeyboardArrowLeftIcon />
             </IconButton>
-            <Paper
-              elevation={24}
-              style={{
-                padding: "4rem",
-                margin: "0 auto",
-                width: "45%",
-                height: "40vh",
-                backgroundImage: `url('${images[0]}')`,
-                backgroundSize: "cover",
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: "center center",
-                flex: "1 1 auto",
-                boxShadow: "0 0 20px rgba(255, 255, 255, 0.5)",
-              }}
-            >
+            <Box style={{ padding: "1rem 0" }}>
+              <Typography
+                variant="h4"
+                align="center"
+                className="text-elements"
+                style={{ fontFamily: "SpaceMono" }}
+              >
+                {imgDetails?.title}
+              </Typography>
               <Box
                 style={{
-                  margin: "0 auto",
-                  width: "41%",
-                  height: "95%",
-                  backgroundColor: "transparent",
-                  borderColor: "transparent",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  backgroundColor: "white",
+                  margin: "0 15rem",
+                  marginBottom: "0.1rem",
+                  borderRadius: "2rem",
                 }}
               >
-                <img
-                  className="zoom-background"
-                  src={images[0]}
-                  alt="APOD"
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "contain",
-                    border: "1px",
-                  }}
-                />
+                {/* Centered DatePicker */}
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    value={selectedDate}
+                    onChange={handleDateChange}
+                    sx={{
+                      "& fieldset": {
+                        border: "none",
+                      },
+                      "& input": {
+                        color: "black",
+                        textAlign: "center", // Center-align the text
+                      },
+                    }}
+                  />
+                </LocalizationProvider>
               </Box>
-            </Paper>
+            </Box>
             <IconButton
               onClick={handleNext}
               color="primary"
@@ -258,52 +316,16 @@ const Astronomy = () => {
                 "&:hover": {
                   backgroundColor: "transparent",
                 },
+                "& .MuiSvgIcon-root": {
+                  fontSize: "7rem",
+                  margin: "0 4rem",
+                },
               }}
             >
-              <KeyboardArrowRightIcon
-                fontSize="large"
-                style={{ fontSize: "7rem", marginRight: "8rem" }}
-              />
+              <KeyboardArrowRightIcon />
             </IconButton>
           </Box>
-          <Box style={{ padding: "1rem 0" }}>
-            <Typography
-              variant="h4"
-              align="center"
-              className="text-elements"
-              style={{ fontFamily: "SpaceMono" }}
-            >
-              {imgDetails?.title}
-            </Typography>
-            <Box
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                backgroundColor: "white",
-                margin: "0 15rem",
-                marginBottom: "0.1rem",
-                borderRadius: "2rem",
-              }}
-            >
-              {/* Centered DatePicker */}
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker
-                  value={selectedDate}
-                  onChange={handleDateChange}
-                  sx={{
-                    "& fieldset": {
-                      border: "none",
-                    },
-                    "& input": {
-                      color: "black",
-                      textAlign: "center", // Center-align the text
-                    },
-                  }}
-                />
-              </LocalizationProvider>
-            </Box>
-          </Box>
+
           <Box
             style={{
               textAlign: "center",
