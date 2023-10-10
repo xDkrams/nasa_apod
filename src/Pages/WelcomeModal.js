@@ -14,7 +14,7 @@ const WelcomeModal = ({ open, setOpen }) => {
 
       return () => clearTimeout(timeoutId);
     }
-  }, [open]);
+  }, [open, setOpen]);
 
   return (
     <Dialog open={open} onClose={handleClose}>
