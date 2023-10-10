@@ -74,24 +74,3 @@
     outline: none; /* Remove the default outline */
     border: 2px solid #1e88e5; /* Custom border color on focus */
   }
-
-/* Default styles for larger screens */
-.arrow-buttons-container {
-  /* Your default styles here */
-}
-
-@media (max-width: 768px) {
-  /* Adjust styles for screens with a max-width of 768px (e.g., tablet) */
-  .arrow-buttons-container {
-    /* Adjust font size for tablet screens */
-    font-size: 5rem;
-  }
-}
-
-@media (max-width: 480px) {
-  /* Further adjust styles for screens with a max-width of 480px (e.g., mobile) */
-  .arrow-buttons-container {
-    /* Adjust font size for mobile screens */
-    font-size: 3rem;
-  }
-}

@@ -23,6 +23,9 @@ import dayjs from "dayjs";
 import "dayjs/locale/en";
 
 const Astronomy = () => {
+  //theme
+  const theme = useTheme();
+  const isBelowMd = useMediaQuery(theme.breakpoints.down("md"));
   // API key
   const key = "YjVAcfbB9h2bx2hb3OcLG63oR6eaf6rjrWQf60ec";
   const initialDate = "2015-01-01";
@@ -158,6 +161,238 @@ const Astronomy = () => {
     return () => clearTimeout(timer);
   }, [loading]);
 
+  const verifyScreen = () => {
+    if (isBelowMd) {
+      return (
+        <Box
+          style={{
+            display: "flex",
+            flexDirection: isBelowMd ? "column" : "row",
+            alignItems: "center",
+            justifyContent: "center",
+            textAlign: "center",
+          }}
+        >
+          <Box
+            style={{
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <IconButton
+              onClick={handlePrevious}
+              color="primary"
+              sx={{
+                "&:hover": {
+                  backgroundColor: "transparent",
+                },
+                "& .MuiSvgIcon-root": {
+                  fontSize: "7rem",
+                  margin: "0 2rem 0 0",
+                },
+              }}
+            >
+              <KeyboardArrowLeftIcon />
+            </IconButton>
+            <IconButton
+              onClick={handleNext}
+              color="primary"
+              sx={{
+                "&:hover": {
+                  backgroundColor: "transparent",
+                },
+                "& .MuiSvgIcon-root": {
+                  fontSize: "7rem",
+                  margin: "0 0 0 2rem",
+                },
+              }}
+            >
+              <KeyboardArrowRightIcon />
+            </IconButton>
+          </Box>
+
+          <div>
+            <Typography
+              variant="h4"
+              className="text-elements"
+              style={{
+                fontFamily: "SpaceMono",
+                margin: "1rem 0",
+              }}
+            >
+              {imgDetails?.title}
+            </Typography>
+            <Box
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                backgroundColor: "white",
+                margin: "0 1rem",
+                borderRadius: "2rem",
+              }}
+            >
+              {/* Centered DatePicker */}
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  value={selectedDate}
+                  onChange={handleDateChange}
+                  sx={{
+                    "& fieldset": {
+                      border: "none",
+                    },
+                    "& input": {
+                      color: "black",
+                      textAlign: "center",
+                    },
+                  }}
+                />
+              </LocalizationProvider>
+            </Box>
+          </div>
+          <Box
+            style={{
+              textAlign: "center",
+              margin: "1rem 1rem",
+              maxHeight: "15rem",
+              height: "15rem",
+              overflow: "auto",
+            }}
+          >
+            <Typography
+              className="text-elements"
+              style={{
+                fontFamily: "SpaceMono",
+                marginLeft: "3rem",
+                marginRight: "3rem",
+                textAlign: "justify",
+                fontSize: "1.2rem",
+              }}
+            >
+              {imgDetails?.explanation}
+            </Typography>
+          </Box>
+        </Box>
+      );
+    } else {
+      //full size
+      return (
+        <Box
+          style={{
+            display: "flex",
+            flexDirection: "column", // Display elements in a column
+            alignItems: "center",
+            justifyContent: "center",
+            textAlign: "center",
+          }}
+        >
+          {/* First Line: Left Arrow, Title, Right Arrow */}
+          <Box
+            style={{
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            {/* Left Arrow */}
+            <IconButton
+              onClick={handlePrevious}
+              color="primary"
+              sx={{
+                "&:hover": {
+                  backgroundColor: "transparent",
+                },
+                "& .MuiSvgIcon-root": {
+                  fontSize: "4rem",
+                  margin: "0 2rem 0 0", // Adjust margin for spacing
+                },
+              }}
+            >
+              <KeyboardArrowLeftIcon />
+            </IconButton>
+
+            {/* Title */}
+            <Typography
+              variant="h4"
+              className="text-elements"
+              style={{
+                fontFamily: "SpaceMono",
+              }}
+            >
+              {imgDetails?.title}
+            </Typography>
+
+            {/* Right Arrow */}
+            <IconButton
+              onClick={handleNext}
+              color="primary"
+              sx={{
+                "&:hover": {
+                  backgroundColor: "transparent",
+                },
+                "& .MuiSvgIcon-root": {
+                  fontSize: "4rem",
+                  margin: "0 0 0 2rem", // Adjust margin for spacing
+                },
+              }}
+            >
+              <KeyboardArrowRightIcon />
+            </IconButton>
+          </Box>
+
+          {/* Second Line: DatePicker */}
+          <Box
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              backgroundColor: "white",
+              margin: "1rem 1rem",
+              borderRadius: "2rem",
+            }}
+          >
+            {/* Centered DatePicker */}
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                value={selectedDate}
+                onChange={handleDateChange}
+                sx={{
+                  "& fieldset": {
+                    border: "none",
+                  },
+                  "& input": {
+                    color: "black",
+                    textAlign: "center",
+                  },
+                }}
+              />
+            </LocalizationProvider>
+          </Box>
+          <Box
+            style={{
+              textAlign: "center",
+              margin: ".5rem 7rem",
+              maxHeight: "12rem",
+              height: "12rem",
+              overflow: "auto",
+            }}
+          >
+            <Typography
+              className="text-elements"
+              style={{
+                fontFamily: "SpaceMono",
+                marginLeft: "3rem",
+                marginRight: "3rem",
+                textAlign: "justify",
+                fontSize: "1.2rem",
+              }}
+            >
+              {imgDetails?.explanation}
+            </Typography>
+          </Box>
+        </Box>
+      );
+    }
+  };
   return (
     <>
       <Box>
@@ -250,104 +485,11 @@ const Astronomy = () => {
               </Paper>
             </Grid>
           </Grid>
-          <Box
-            style={{
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
-            <IconButton
-              onClick={handlePrevious}
-              color="primary"
-              sx={{
-                "&:hover": {
-                  backgroundColor: "transparent",
-                },
-                "& .MuiSvgIcon-root": {
-                  fontSize: "7rem",
-                  margin: "0 4rem",
-                },
-              }}
-            >
-              <KeyboardArrowLeftIcon />
-            </IconButton>
-            <Box style={{ padding: "1rem 0" }}>
-              <Typography
-                variant="h4"
-                align="center"
-                className="text-elements"
-                style={{ fontFamily: "SpaceMono" }}
-              >
-                {imgDetails?.title}
-              </Typography>
-              <Box
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  backgroundColor: "white",
-                  margin: "0 15rem",
-                  marginBottom: "0.1rem",
-                  borderRadius: "2rem",
-                }}
-              >
-                {/* Centered DatePicker */}
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DatePicker
-                    value={selectedDate}
-                    onChange={handleDateChange}
-                    sx={{
-                      "& fieldset": {
-                        border: "none",
-                      },
-                      "& input": {
-                        color: "black",
-                        textAlign: "center", // Center-align the text
-                      },
-                    }}
-                  />
-                </LocalizationProvider>
-              </Box>
-            </Box>
-            <IconButton
-              onClick={handleNext}
-              color="primary"
-              sx={{
-                "&:hover": {
-                  backgroundColor: "transparent",
-                },
-                "& .MuiSvgIcon-root": {
-                  fontSize: "7rem",
-                  margin: "0 4rem",
-                },
-              }}
-            >
-              <KeyboardArrowRightIcon />
-            </IconButton>
-          </Box>
-
-          <Box
-            style={{
-              textAlign: "center",
-              margin: "1rem 10rem",
-              maxHeight: "13rem",
-              height: "13rem",
-              overflow: "auto",
-            }}
-          >
-            <Typography
-              className="text-elements"
-              style={{
-                fontFamily: "SpaceMono",
-                marginLeft: "8rem",
-                marginRight: "8rem",
-                textAlign: "justify",
-                fontSize: "1.3rem",
-              }}
-            >
-              {imgDetails?.explanation}
-            </Typography>
-          </Box>
+          <Grid container justifyContent="center" alignItems="center">
+            <Grid item xs={12} md={12} lg={12} xl={12}>
+              {verifyScreen()}
+            </Grid>
+          </Grid>
         </Box>
         <Box>
           <Typography variant="body2" className="text-elements">
