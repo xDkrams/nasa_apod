@@ -1,4 +1,3 @@
-import React, { useEffect } from "react";
 import { Dialog, Typography, Button, Box } from "@mui/material";
 import "../index.css";
 
@@ -6,15 +5,6 @@ const WelcomeModal = ({ open, setOpen }) => {
   const handleClose = () => {
     setOpen(false);
   };
-  useEffect(() => {
-    if (open) {
-      const timeoutId = setTimeout(() => {
-        setOpen(false);
-      }, 5000);
-
-      return () => clearTimeout(timeoutId);
-    }
-  }, [open, setOpen]);
 
   return (
     <Dialog open={open} onClose={handleClose}>
